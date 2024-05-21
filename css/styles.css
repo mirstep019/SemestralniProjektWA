@@ -73,8 +73,8 @@
   --bs-border-radius-xl: 1rem;
   --bs-border-radius-2xl: 2rem;
   --bs-border-radius-pill: 50rem;
-  --bs-link-color: #212529;
-  --bs-link-hover-color: #0085A1;
+  --bs-link-color: #ca6928;
+  --bs-link-hover-color: #ca6928;
   --bs-code-color: #d63384;
   --bs-highlight-bg: #fff3cd;
 }
@@ -383,7 +383,7 @@ button,
 [type=button],
 [type=reset],
 [type=submit] {
-  -webkit-appearance: button;
+  --webkit-appearance: button;
 }
 button:not(:disabled),
 [type=button]:not(:disabled),
@@ -441,7 +441,7 @@ legend + * {
 
 [type=search] {
   outline-offset: -2px;
-  -webkit-appearance: textfield;
+  --webkit-appearance: textfield;
 }
 
 /* rtl:raw:
@@ -462,7 +462,7 @@ legend + * {
 
 ::file-selector-button {
   font: inherit;
-  -webkit-appearance: button;
+  --webkit-appearance: button;
 }
 
 output {
@@ -2799,19 +2799,19 @@ textarea.form-control-lg {
 
 .btn-primary {
   --bs-btn-color: #fff;
-  --bs-btn-bg: #0085A1;
-  --bs-btn-border-color: #0085A1;
+  --bs-btn-bg: #ca6928;
+  --bs-btn-border-color: #ca6928;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #007189;
-  --bs-btn-hover-border-color: #006a81;
-  --bs-btn-focus-shadow-rgb: 38, 151, 175;
+  --bs-btn-hover-bg: #b35f24;
+  --bs-btn-hover-border-color: #a85522;
+  --bs-btn-focus-shadow-rgb: 202, 105, 40;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #006a81;
-  --bs-btn-active-border-color: #006479;
+  --bs-btn-active-bg: #a85522;
+  --bs-btn-active-border-color: #944c1f;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
-  --bs-btn-disabled-bg: #0085A1;
-  --bs-btn-disabled-border-color: #0085A1;
+  --bs-btn-disabled-bg: #ca6928;
+  --bs-btn-disabled-border-color: #ca6928;
 }
 
 .btn-secondary {
@@ -10641,20 +10641,19 @@ blockquote {
     position: fixed;
     top: -83px;
     transition: transform 0.2s;
-    border-bottom: 1px solid white;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #000000d9;
   }
   #mainNav.is-fixed .navbar-brand {
-    color: #212529;
+    color: #fff;
   }
   #mainNav.is-fixed .navbar-brand:focus, #mainNav.is-fixed .navbar-brand:hover {
     color: #0085A1;
   }
   #mainNav.is-fixed .navbar-nav > li.nav-item > a {
-    color: #212529;
+    color: #fff;
   }
   #mainNav.is-fixed .navbar-nav > li.nav-item > a:focus, #mainNav.is-fixed .navbar-nav > li.nav-item > a:hover {
-    color: #0085A1;
+    color: #ca6928;
   }
   #mainNav.is-visible {
     /* if the user changes the scrolling direction, we show the header */
@@ -10769,9 +10768,10 @@ header.masthead .post-heading .meta a {
 .post-preview > a {
   color: #212529;
 }
+
 .post-preview > a:focus, .post-preview > a:hover {
   text-decoration: none;
-  color: #0085A1;
+  color: #974e1d;
 }
 .post-preview > a > .post-title {
   font-size: 1.875rem;
