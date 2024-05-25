@@ -17,9 +17,16 @@
 </head>
 <body>
     <!-- Navigation-->
-    <?php include 'include/navigation.php'; ?>
+    <?php
+            $navPath = __DIR__ . '/include/navigation.php';
+            if (file_exists($navPath) && is_readable($navPath)) {
+                include $navPath;
+            } else {
+                echo 'Navigace není dostupná.';
+            }
+        ?>
     <!-- Page Header-->
-    <header class="masthead" style="background-image: url('https://i0.wp.com/grungecake.com/wp-content/uploads/2024/03/future-metro-boomin-wwe-dont-trust-you-album-trailer-grungecake-thumbnail.gif?fit=520%2C293&ssl=1'); background-position: center;">
+    <header class="masthead" style="background-image: url('assets/img/traviskanye.png'); background-position: top;">
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">

@@ -17,7 +17,14 @@
     </head>
     <body>
         <!-- Navigation-->
-        <?php include 'include/navigation.php'; ?>
+        <?php
+            $navPath = __DIR__ . '/include/navigation.php';
+            if (file_exists($navPath) && is_readable($navPath)) {
+                include $navPath;
+            } else {
+                echo 'Navigace není dostupná.';
+            }
+        ?>
         
         <!-- Page Header-->
         <header class="masthead" style="background-image: url('assets/img/post-bg.jpg')">
