@@ -1,3 +1,33 @@
+<?php
+error_reporting(E_ALL & ~E_NOTICE);
+
+session_start();
+require_once 'include/dbConnection.php';
+
+$db = new Database("localhost", "root", "", "rapnews_database");
+$conn = $db->connect();
+
+// Načtení příspěvků z databáze
+$query = "SELECT posts.post_id, posts.title, posts.category, posts.subcategory, posts.post_date, posts.image_url, posts.content, posts.likes, users.username, COUNT(likes.like_id) AS like_count
+          FROM posts 
+          JOIN users ON posts.user_id = users.user_id 
+          LEFT JOIN likes ON posts.post_id = likes.post_id
+          GROUP BY posts.post_id
+          ORDER BY posts.post_date DESC";
+$result = $conn->query($query);
+
+function truncate($text, $chars = 100) {
+    if (strlen($text) <= $chars) {
+        return $text;
+    }
+    $text = substr($text, 0, $chars);
+    if (substr($text, -1) != ' ') {
+        $text = substr($text, 0, strrpos($text, ' '));
+    }
+    return $text . '...';
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -46,59 +76,22 @@
                     <hr class="my-4" />
                 </div>
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">Drake Releases Viral Diss Track "Push Ups"</h2>
-                            <h3 class="post-subtitle">Drake's latest track sparks major controversy</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Rap Novinky</a>
-                            on May 20, 2024
-                        </p>
-                    </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html"><h2 class="post-title">Kendrick Lamar's Response to Drake</h2>
-                            <h3 class="post-subtitle">Kendrick fires back with "Euphoria"</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Rap Novinky</a>
-                            on May 18, 2024
-                        </p>
-                    </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">Review: Rod Wave's "Pray 4 Love"</h2>
-                            <h3 class="post-subtitle">A deeply personal and heartfelt album</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Rap Novinky</a>
-                            on April 30, 2024
-                        </p>
-                    </div>
-                    <!-- Divider-->
-                    <hr class="my-4" />
-                    <!-- Post preview-->
-                    <div class="post-preview">
-                        <a href="post.html">
-                            <h2 class="post-title">Top 10 Most Streamed Rap Songs of All Time</h2>
-                            <h3 class="post-subtitle">From Coolio to Drake, the songs that defined an era</h3>
-                        </a>
-                        <p class="post-meta">
-                            Posted by
-                            <a href="#!">Rap Novinky</a>
-                            on April 20, 2024
-                        </p>
-                    </div>
+                    <?php while ($post = $result->fetch_assoc()): ?>
+                        <div class="post-preview">
+                            <a href="post.php?id=<?php echo $post['post_id']; ?>">
+                                <h2 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h2>
+                                <h3 class="post-subtitle"><?php echo htmlspecialchars(truncate($post['content'], 150)); ?></h3>
+                            </a>
+                            <p class="post-meta">
+                                Posted by
+                                <a href="#!"><?php echo htmlspecialchars($post['username']); ?></a>
+                                on <?php echo date("F j, Y", strtotime($post['post_date'])); ?>
+                                <br>
+                                <i class="fas fa-heart mt-4"></i> <?php echo $post['like_count']; ?> Likes
+                            </p>
+                        </div>
+                        <hr class="my-4" />
+                    <?php endwhile; ?>
                 </div>
             </div>
         </div>
