@@ -1,11 +1,9 @@
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
-
 session_start();
 
 // Zkontrolujte, zda je uživatel přihlášen
 if (!isset($_SESSION['username'])) {
-    // Pokud uživatel není přihlášen, přesměrujte jej na přihlašovací stránku
     header("Location: login.php");
     exit();
 }
@@ -19,13 +17,12 @@ $userManager = new UserManager($db);
 
 // Načtěte informace o uživateli z databáze
 $user_id = $_SESSION['user_id'];
-$query = "SELECT username, email FROM users WHERE user_id=?";
+$query = "SELECT user_id, username, email, role FROM users WHERE user_id=?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-
 ?>
 
 <!DOCTYPE html>
@@ -40,12 +37,12 @@ $user = $result->fetch_assoc();
 </head>
 <body>
     <?php
-        $navPath = __DIR__ . '/include/navigation.php';
-        if (file_exists($navPath) && is_readable($navPath)) {
-            include $navPath;
-        } else {
-            echo 'Navigace není dostupná.';
-        }
+    $navPath = __DIR__ . '/include/navigation.php';
+    if (file_exists($navPath) && is_readable($navPath)) {
+        include $navPath;
+    } else {
+        echo 'Navigace není dostupná.';
+    }
     ?>
     <header class="masthead" style="background: linear-gradient(180deg, black, #ca6928);">
         <div class="container position-relative px-4 px-lg-5">
@@ -63,12 +60,6 @@ $user = $result->fetch_assoc();
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    <?php if (isset($_SESSION['message'])): ?>
-                        <div class="alert alert-success">
-                            <?php echo $_SESSION['message']; ?>
-                            <?php unset($_SESSION['message']); // Zprávu zobrazit pouze jednou ?>
-                        </div>
-                    <?php endif; ?>
                     <h2>Your Profile</h2>
                     <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
                     <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
@@ -93,10 +84,32 @@ $user = $result->fetch_assoc();
                             echo '</a>';
                             echo '<a href="edit_post.php?id=' . $post['post_id'] . '" class="btn btn-sm btn-primary">Edit</a>';
                             echo '<a href="delete_post.php?id=' . $post['post_id'] . '" class="btn btn-sm btn-danger">Delete</a>';
+                            echo '</div>';
                             echo '<hr>';
                         }
                     } else {
                         echo '<p>You have no posts.</p>';
+                    }
+
+                    // Pokud je uživatel admin, zobrazit všechny uživatele
+                    if ($_SESSION['role'] === 'admin') {
+                        echo '<h2>All Users</h2>';
+                        $query = "SELECT user_id, username, email FROM users";
+                        $result = $conn->query($query);
+
+                        if ($result->num_rows > 0) {
+                            while ($user = $result->fetch_assoc()) {
+                                echo '<div class="user-preview">';
+                                echo '<p><strong>Username:</strong> ' . htmlspecialchars($user['username']) . '</p>';
+                                echo '<p><strong>Email:</strong> ' . htmlspecialchars($user['email']) . '</p>';
+                                echo '<a href="edit_profile.php?id=' . $user['user_id'] . '" class="btn btn-sm btn-primary">Edit</a>';
+                                echo '<a href="delete_profile.php?id=' . $user['user_id'] . '" class="btn btn-sm btn-danger">Delete</a>';
+                                echo '</div>';
+                                echo '<hr>';
+                            }
+                        } else {
+                            echo '<p>No users found.</p>';
+                        }
                     }
                     ?>
                 </div>

@@ -78,7 +78,7 @@ function truncate($text, $chars = 100)
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
                     <div class="site-heading">
-                        <h1>The Rap News</h1>
+                        <h1>News</h1>
                         <span class="subheading">Fresh news about rap from worldwide bloggers.</span>
                     </div>
                 </div>

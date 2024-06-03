@@ -43,6 +43,7 @@ if (isset($_SESSION['user_id'])) {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -65,10 +66,30 @@ if (isset($_SESSION['user_id'])) {
             border-radius: 5px;
             cursor: pointer;
             user-select: none;
+            position: relative;
         }
 
         .like-container .liked {
             color: red;
+        }
+
+        .like-container[disabled] {
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .like-container[disabled]:hover::after {
+            content: 'Only registered users can like posts';
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: black;
+            color: white;
+            padding: 5px;
+            border-radius: 5px;
+            white-space: nowrap;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -89,7 +110,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    <div class="post-heading" style="word-break: break-word;hyphens: auto;">
+                    <div class="post-heading">
                         <h1><?php echo htmlspecialchars($post['title']); ?></h1>
                         <h2 class="subheading"><?php echo htmlspecialchars($post['category']); ?> - <?php echo htmlspecialchars($post['subcategory']); ?></h2>
                         <span class="meta">
@@ -97,7 +118,6 @@ if (isset($_SESSION['user_id'])) {
                             <a href="#!"><?php echo htmlspecialchars($post['username']); ?></a>
                             on <?php echo date("F j, Y", strtotime($post['post_date'])); ?>
                             <br>
-                            
                         </span>
                     </div>
                 </div>
@@ -109,10 +129,10 @@ if (isset($_SESSION['user_id'])) {
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                <div id="like-container" class="like-container">
-                                <i id="like-icon" class="fas fa-heart <?php echo $liked_by_user ? 'liked' : ''; ?>"></i>
-                                <span id="like-count"><?php echo $post['like_count']; ?></span> Likes
-                            </div>
+                    <div id="like-container" class="like-container <?php echo $liked_by_user ? 'liked' : ''; ?>" <?php echo isset($_SESSION['user_id']) ? '' : 'disabled'; ?>>
+                        <i id="like-icon" class="fas fa-heart"></i>
+                        <span id="like-count"><?php echo $post['like_count']; ?></span> Likes
+                    </div>
                     <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
                 </div>
             </div>
@@ -162,24 +182,27 @@ if (isset($_SESSION['user_id'])) {
             const likeIcon = document.getElementById('like-icon');
             const likeCount = document.getElementById('like-count');
 
-            likeContainer.addEventListener('click', function() {
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "like.php");
-                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        likeCount.textContent = response.like_count;
-                        if (response.liked) {
-                            likeIcon.classList.add('liked');
-                        } else {
-                            likeIcon.classList.remove('liked');
+            if (!likeContainer.hasAttribute('disabled')) {
+                likeContainer.addEventListener('click', function() {
+                    const xhr = new XMLHttpRequest();
+                    xhr.open("POST", "like.php");
+                    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            const response = JSON.parse(xhr.responseText);
+                            likeCount.textContent = response.like_count;
+                            if (response.liked) {
+                                likeIcon.classList.add('liked');
+                            } else {
+                                likeIcon.classList.remove('liked');
+                            }
                         }
-                    }
-                };
-                xhr.send("post_id=<?php echo $post_id; ?>");
-            });
+                    };
+                    xhr.send("post_id=<?php echo $post_id; ?>");
+                });
+            }
         });
     </script>
 </body>
+
 </html>
