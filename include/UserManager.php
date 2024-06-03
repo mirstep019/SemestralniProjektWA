@@ -1,4 +1,5 @@
 <?php
+
 require_once 'dbConnection.php'; // Připojení k souboru s třídou pro práci s databází
 
 class UserManager {
@@ -25,6 +26,7 @@ class UserManager {
                 $_SESSION['user_id'] = $user['user_id'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['user_email'] = $user['email'];
+                $_SESSION['role'] = $user['role']; // Přidání role do session
                 // Přesměrování na domovskou stránku nebo jinou požadovanou stránku po přihlášení
                 header("Location: index.php"); // Uprav 'index.php' podle potřeby
                 exit();

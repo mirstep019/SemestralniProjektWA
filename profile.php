@@ -63,6 +63,12 @@ $user = $result->fetch_assoc();
         <div class="container px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
+                    <?php if (isset($_SESSION['message'])): ?>
+                        <div class="alert alert-success">
+                            <?php echo $_SESSION['message']; ?>
+                            <?php unset($_SESSION['message']); // Zprávu zobrazit pouze jednou ?>
+                        </div>
+                    <?php endif; ?>
                     <h2>Your Profile</h2>
                     <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
                     <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
@@ -85,7 +91,8 @@ $user = $result->fetch_assoc();
                             echo '<h3 class="post-title">' . htmlspecialchars($post['title']) . '</h3>';
                             echo '<p class="post-meta">Posted on ' . $post['post_date'] . '</p>';
                             echo '</a>';
-                            echo '</div>';
+                            echo '<a href="edit_post.php?id=' . $post['post_id'] . '" class="btn btn-sm btn-primary">Edit</a>';
+                            echo '<a href="delete_post.php?id=' . $post['post_id'] . '" class="btn btn-sm btn-danger">Delete</a>';
                             echo '<hr>';
                         }
                     } else {

@@ -89,7 +89,7 @@ if (isset($_SESSION['user_id'])) {
         <div class="container position-relative px-4 px-lg-5">
             <div class="row gx-4 gx-lg-5 justify-content-center">
                 <div class="col-md-10 col-lg-8 col-xl-7">
-                    <div class="post-heading">
+                    <div class="post-heading" style="word-break: break-word;hyphens: auto;">
                         <h1><?php echo htmlspecialchars($post['title']); ?></h1>
                         <h2 class="subheading"><?php echo htmlspecialchars($post['category']); ?> - <?php echo htmlspecialchars($post['subcategory']); ?></h2>
                         <span class="meta">
