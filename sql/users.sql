@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Počítač: 127.0.0.1
--- Vytvořeno: Sob 25. kvě 2024, 20:54
+-- Vytvořeno: Pon 03. čen 2024, 21:47
 -- Verze serveru: 10.4.32-MariaDB
 -- Verze PHP: 8.2.12
 
@@ -40,7 +40,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `username`, `email`, `password`, `role`) VALUES
-(1, 'admin', 'admin@example.com', '$2y$10$y7sJG47g1KQz2Bx0vvfqTOZtG3ibP/Aebzi5e5xkgF1pWgHUSO2.O\r\n', 'admin');
+(1, 'Administrator', 'admin@example.com', '$2y$10$BiONGPBnbGh4ffxNw..AhevgMWkd0vUxwFu0BdfjMyNm4ebsldkmK', 'admin'),
+(2, 'UserOne', 'user1@example.com', '$2y$10$tYd91MqMScdIfD3kITH7ke5p0am0VLKyqscZit3hKZeuK.3YF/b/O', 'user'),
+(3, 'UserTwo', 'user2@example.com', '$2y$10$t4Crppa1qq6s/vK4dJl79eHdD3IJ6rmE5fG3nPlutlYG5XBXmq3Y6', 'user');
 
 --
 -- Indexy pro exportované tabulky
@@ -62,7 +64,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT pro tabulku `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

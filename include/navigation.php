@@ -12,7 +12,7 @@ if (isset($_SESSION['username'])) {
 ?>
 
 <!-- Responsive navbar-->
-<nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar" id="mainNav">
     <div class="container px-4 px-lg-5">
         <a class="navbar-brand" href="index.php"><img src="assets/img/logo.png" style="height: 50px;" alt="Rap Novinky Logo"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">

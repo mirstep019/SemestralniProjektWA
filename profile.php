@@ -1,9 +1,8 @@
 <?php
 error_reporting(E_ALL & ~E_NOTICE);
-session_start();
 
-// Zkontrolujte, zda je uživatel přihlášen
-if (!isset($_SESSION['username'])) {
+session_start();
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -15,14 +14,24 @@ $db = new Database("localhost", "root", "", "rapnews_database");
 $conn = $db->connect();
 $userManager = new UserManager($db);
 
-// Načtěte informace o uživateli z databáze
 $user_id = $_SESSION['user_id'];
-$query = "SELECT user_id, username, email, role FROM users WHERE user_id=?";
+$query = "SELECT username, email, role FROM users WHERE user_id=?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
+
+function truncate($text, $chars = 100) {
+    if (strlen($text) <= $chars) {
+        return $text;
+    }
+    $text = substr($text, 0, $chars);
+    if (substr($text, -1) != ' ') {
+        $text = substr($text, 0, strrpos($text, ' '));
+    }
+    return $text . '...';
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +43,22 @@ $user = $result->fetch_assoc();
     <meta name="author" content="" />
     <title>Profile - Rap Novinky</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <style>
+        .like-container {
+            display: inline-block;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .like-container .liked {
+            color: red;
+        }
+    </style>
 </head>
+
 <body>
     <?php
     $navPath = __DIR__ . '/include/navigation.php';
@@ -68,45 +92,57 @@ $user = $result->fetch_assoc();
                     <a href="create_post.php" class="btn btn-primary">Create New Post</a>
                     <hr>
                     <?php
-                    // Zobrazit příspěvky uživatele
-                    $query = "SELECT post_id, title, post_date FROM posts WHERE user_id=? ORDER BY post_date DESC";
+                    $query = "SELECT posts.post_id, posts.title, posts.post_date, posts.content, posts.image_url, posts.user_id, users.username, COUNT(likes.like_id) AS like_count
+                              FROM posts
+                              JOIN users ON posts.user_id = users.user_id
+                              LEFT JOIN likes ON posts.post_id = likes.post_id
+                              WHERE posts.user_id = ?
+                              GROUP BY posts.post_id
+                              ORDER BY posts.post_date DESC";
                     $stmt = $conn->prepare($query);
                     $stmt->bind_param("i", $user_id);
                     $stmt->execute();
                     $result = $stmt->get_result();
 
                     if ($result->num_rows > 0) {
-                        while ($post = $result->fetch_assoc()) {
-                            echo '<div class="post-preview">';
-                            echo '<a href="post.php?id=' . $post['post_id'] . '">';
-                            echo '<h3 class="post-title">' . htmlspecialchars($post['title']) . '</h3>';
-                            echo '<p class="post-meta">Posted on ' . $post['post_date'] . '</p>';
-                            echo '</a>';
-                            echo '<a href="edit_post.php?id=' . $post['post_id'] . '" class="btn btn-sm btn-primary">Edit</a>';
-                            echo '<a href="delete_post.php?id=' . $post['post_id'] . '" class="btn btn-sm btn-danger">Delete</a>';
-                            echo '</div>';
-                            echo '<hr>';
-                        }
+                        while ($post = $result->fetch_assoc()) : ?>
+                            <div class="post-preview mb-4">
+                                <a href="post.php?id=<?php echo $post['post_id']; ?>">
+                                    <h2 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h2>
+                                    <h3 class="post-subtitle"><?php echo htmlspecialchars(truncate($post['content'], 150)); ?></h3>
+                                </a>
+                                <p class="post-meta">
+                                    Posted by
+                                    <a href="#!"><?php echo htmlspecialchars($post['username']); ?></a>
+                                    on <?php echo date("F j, Y", strtotime($post['post_date'])); ?>
+                                    <br>
+                                    <i class="fas fa-heart mt-4"></i> <?php echo $post['like_count']; ?> Likes
+                                    <br>
+                                    <a href="edit_post.php?id=<?php echo $post['post_id']; ?>" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="delete_post.php?id=<?php echo $post['post_id']; ?>" class="btn btn-sm btn-danger">Delete</a>
+                                </p>
+                            </div>
+                            <hr class="my-4" />
+                        <?php endwhile;
                     } else {
                         echo '<p>You have no posts.</p>';
                     }
 
-                    // Pokud je uživatel admin, zobrazit všechny uživatele
                     if ($_SESSION['role'] === 'admin') {
                         echo '<h2>All Users</h2>';
                         $query = "SELECT user_id, username, email FROM users";
                         $result = $conn->query($query);
 
                         if ($result->num_rows > 0) {
-                            while ($user = $result->fetch_assoc()) {
-                                echo '<div class="user-preview">';
-                                echo '<p><strong>Username:</strong> ' . htmlspecialchars($user['username']) . '</p>';
-                                echo '<p><strong>Email:</strong> ' . htmlspecialchars($user['email']) . '</p>';
-                                echo '<a href="edit_profile.php?id=' . $user['user_id'] . '" class="btn btn-sm btn-primary">Edit</a>';
-                                echo '<a href="delete_profile.php?id=' . $user['user_id'] . '" class="btn btn-sm btn-danger">Delete</a>';
-                                echo '</div>';
-                                echo '<hr>';
-                            }
+                            while ($user = $result->fetch_assoc()) : ?>
+                                <div class="post-preview mb-4">
+                                    <p><strong>Username:</strong> <?php echo htmlspecialchars($user['username']); ?></p>
+                                    <p><strong>Email:</strong> <?php echo htmlspecialchars($user['email']); ?></p>
+                                    <a href="edit_profile.php?id=<?php echo $user['user_id']; ?>" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="delete_profile.php?id=<?php echo $user['user_id']; ?>" class="btn btn-sm btn-danger">Delete</a>
+                                    <hr class="my-4" />
+                                </div>
+                            <?php endwhile;
                         } else {
                             echo '<p>No users found.</p>';
                         }
@@ -155,4 +191,5 @@ $user = $result->fetch_assoc();
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
 </body>
+
 </html>

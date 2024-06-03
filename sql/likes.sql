@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Počítač: 127.0.0.1
--- Vytvořeno: Sob 25. kvě 2024, 20:54
+-- Vytvořeno: Pon 03. čen 2024, 21:47
 -- Verze serveru: 10.4.32-MariaDB
 -- Verze PHP: 8.2.12
 
@@ -34,6 +34,13 @@ CREATE TABLE `likes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
+-- Vypisuji data pro tabulku `likes`
+--
+
+INSERT INTO `likes` (`like_id`, `post_id`, `user_id`) VALUES
+(17, 26, 1);
+
+--
 -- Indexy pro exportované tabulky
 --
 
@@ -53,7 +60,7 @@ ALTER TABLE `likes`
 -- AUTO_INCREMENT pro tabulku `likes`
 --
 ALTER TABLE `likes`
-  MODIFY `like_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `like_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Omezení pro exportované tabulky

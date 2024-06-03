@@ -14,9 +14,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // Hashování hesla
 
     if ($userManager->registerUser($username, $email, $password)) {
-        $registrationMessage = "Uživatel byl úspěšně registrován.";
+        $registrationMessage = "User has been successfully registered.";
     } else {
-        $registrationMessage = "Registrace selhala.";
+        $registrationMessage = "Registration failed.";
     }
 }
 ?>
@@ -30,6 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="author" content="" />
     <title>Register - Rap Novinky</title>
     <link rel="stylesheet" href="css/styles.css" />
+    <style>
+        .alert {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+    </style>
 </head>
 <body>
     <?php
@@ -37,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (file_exists($navPath) && is_readable($navPath)) {
             include $navPath;
         } else {
-            echo 'Navigace není dostupná.';
+            echo 'Navigation is not available.';
         }
     ?>
 
@@ -54,7 +61,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </header>
     <?php if (!empty($registrationMessage)): ?>
-        <div style="margin-top: 0px;" class="alert alert-success"><?php echo $registrationMessage; ?></div>
+        <div class="alert alert-success text-center"><?php echo $registrationMessage; ?></div>
     <?php endif; ?>
     <main class="mb-4">
         <div class="container px-4 px-lg-5">
@@ -84,8 +91,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
     </main>
-    <footer class="py-5 bg-dark">
-        <div class="container px-4 px-lg-5"><p class="m-0 text-center text-white">Copyright &copy; Rap Novinky 2024</p></div>
+    <footer class="footer py-4 mt-auto">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 justify-content-center">
+                <div class="col-md-10 col-lg-8 col-xl-7">
+                    <div class="small text-center text-muted fst-italic">Copyright &copy; Rap Novinky 2024</div>
+                </div>
+            </div>
+        </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="js/scripts.js"></script>
